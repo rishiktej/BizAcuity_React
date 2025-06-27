@@ -9,6 +9,8 @@ function DraggableResizableImage({
   isSelected,
   onSelect,
   onDelete,
+  frameWidth,
+  frameHeight,
 }) {
   const [pos, setPos] = useState({ x: img.x, y: img.y });
   const [isDragging, setIsDragging] = useState(false);
@@ -36,10 +38,19 @@ function DraggableResizableImage({
 
   const handleMouseMove = (e) => {
     if (isSelected && isDragging) {
-      setPos((prev) => ({
-        x: prev.x + e.movementX,
-        y: prev.y + e.movementY,
-      }));
+      setPos((prev) => {
+        const newX = prev.x + e.movementX;
+        const newY = prev.y + e.movementY;
+
+        // Clamp the new X and Y within the background boundaries
+        const maxX = frameWidth - dimensions.width;
+        const maxY = frameHeight - dimensions.height;
+
+        return {
+          x: Math.max(0, Math.min(newX, maxX)),
+          y: Math.max(0, Math.min(newY, maxY)),
+        };
+      });
     }
   };
 
@@ -51,8 +62,13 @@ function DraggableResizableImage({
   };
 
   const handleResize = (e, direction, ref, d) => {
-    const newWidth = ref.offsetWidth;
-    const newHeight = ref.offsetHeight;
+    let newWidth = ref.offsetWidth;
+    let newHeight = ref.offsetHeight;
+
+    // Clamp width and height so it stays within frame
+    newWidth = Math.min(newWidth, frameWidth - pos.x);
+    newHeight = Math.min(newHeight, frameHeight - pos.y);
+
     setDimensions({ width: newWidth, height: newHeight });
     onUpdate(index, { width: newWidth, height: newHeight });
   };

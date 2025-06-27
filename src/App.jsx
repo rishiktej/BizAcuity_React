@@ -205,6 +205,8 @@ function App() {
               onDelete={deleteImage}
               isSelected={selectedImageIndex === index}
               onSelect={(i) => setSelectedImageIndex(i)}
+              frameWidth={pixelWidth} // add this
+              frameHeight={pixelHeight}
             />
           ))}
         </div>
