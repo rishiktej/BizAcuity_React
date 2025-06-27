@@ -77,6 +77,16 @@ function DraggableResizableImage({
       "polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%)",
     none: "none",
   };
+  const resizeHandles = {
+    top: true,
+    right: true,
+    bottom: true,
+    left: true,
+    topRight: true,
+    bottomRight: true,
+    bottomLeft: true,
+    topLeft: true,
+  };
 
   return (
     <div
@@ -94,31 +104,27 @@ function DraggableResizableImage({
     >
       <Resizable
         size={dimensions}
-        enable={
-          isSelected
-            ? {
-                top: true,
-                right: true,
-                bottom: true,
-                left: true,
-                topRight: true,
-                bottomRight: true,
-                bottomLeft: true,
-                topLeft: true,
-              }
-            : false
-        }
+        enable={isSelected ? resizeHandles : false}
         lockAspectRatio={img.lockAspectRatio}
         onResizeStop={handleResize}
       >
         <div className="relative w-full h-full">
-          <img
-            src={img.src}
-            alt=""
-            className="w-full h-full object-contain pointer-events-none"
-            style={{ clipPath: shapeClipPaths[img.shape || "none"] }}
-            draggable={false}
-          />
+          {/* Shape wrapper */}
+          <div
+            className="w-full h-full overflow-hidden"
+            style={{
+              clipPath: shapeClipPaths[img.shape || "none"],
+              WebkitClipPath: shapeClipPaths[img.shape || "none"],
+            }}
+          >
+            <img
+              src={img.src}
+              alt=""
+              className="w-full h-full object-cover pointer-events-none"
+              draggable={false}
+            />
+          </div>
+
           {isSelected && (
             <>
               <button
